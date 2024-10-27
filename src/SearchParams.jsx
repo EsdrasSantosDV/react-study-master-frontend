@@ -1,7 +1,10 @@
 import { useState } from "react";
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
+//NUNCA FAZER ISSO, OS COMPONENTES DEVEM SER STATELESS
+let counter=0;
 const SearchParams = () => {
+  counter++;
   const [location, setLocation] = useState("");
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
@@ -9,6 +12,7 @@ const SearchParams = () => {
   return (
     <div className="search-params">
       <form>
+        {counter}
         <label htmlFor="location">
           Location
           <input
