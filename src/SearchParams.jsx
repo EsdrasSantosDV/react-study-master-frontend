@@ -1,18 +1,45 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
+import Pet from './Pet'
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
-//NUNCA FAZER ISSO, OS COMPONENTES DEVEM SER STATELESS
-let counter=0;
+
 const SearchParams = () => {
-  counter++;
+  //TEMOS OS ESTADOS, DE FORMA ANALOGA, PODEMOS PENSAR COMO UM WRAPPER DE ESTADO, DIFERNETE DO SIGNAL, ELE NÃO SEGUE UMA ESTRUTURA DECLARATIVA
+  //EM RELAÇÃO AS MUDANÇAS, PQ DIGO ISSO, EXISTE UAM API IMPERATIVA, DE ATUALIZAR O ESTADO,
+  //COMO PODE VER O USE STATE TE RETORNA UMA MATRIZ
+  const [pets, setPets] = useState([]);
   const [location, setLocation] = useState("");
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
+  useEffect(() => {
+    //UM EFEITO E ALGO QUE VAI ACONTECER FORA DO SEU COMPONENTE, NESSE CASO,
+    // PODEMOS TER UM ARRAY DE DEPENDENCIAS QUE IRA TRIGAR ESSE EFEITO.
+    console.log("estouy aqui");
+    requestPets();
+
+    //TODA VEZ QUE O ANIMAL MUDAR, ELE IRA TRIGAR ESSE EFEITO
+  }, [animal]); // eslint-disable-line react-hooks/exhaustive-deps
+  //SEMPRE PELO VISTO VAI TER QUE USAR ESSE ESLINT, SE O ARRAY DE DEPENCIAS ESTIVER VAZIO
+
+  async function requestPets() {
+    const res = await fetch(
+      `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
+    );
+    const json = await res.json();
+
+    setPets(json.pets);
+  }
   const breeds = [];
   return (
     <div className="search-params">
-      <form>
-        {counter}
+      <form onSubmit={(e)=>
+        {
+          //ESSE E O FORMULARIO CONTROLADO PELO REACT, NÃO E A MLEHOR PRATICA
+          e.preventDefault();
+          requestPets();
+        }
+      }>
+ 
         <label htmlFor="location">
           Location
           <input
@@ -66,6 +93,14 @@ const SearchParams = () => {
 
         <button>Submit</button>
       </form>
+      {pets.map((pet) => (
+        <Pet
+          name={pet.name}
+          animal={pet.animal}
+          breed={pet.breed}
+          key={pet.id}
+        />
+      ))}
     </div>
   );
 };
