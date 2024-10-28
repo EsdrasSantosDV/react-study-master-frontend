@@ -1,5 +1,6 @@
 import { useState ,useEffect} from "react";
 import Pet from './Pet'
+import useBreedList from "./useBreedList";
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 
@@ -11,6 +12,8 @@ const SearchParams = () => {
   const [location, setLocation] = useState("");
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
+  //QUANTO UTILIZARMOS VARIOS HOOKS, PODEMOS CRIAR UM HOOK PERSONALIZADO, ANESSE CASO, QUADNO MUDAR O ANIMAL, VOU PEGAR OS BREADS
+  const [breeds] = useBreedList(animal);
   useEffect(() => {
     //UM EFEITO E ALGO QUE VAI ACONTECER FORA DO SEU COMPONENTE, NESSE CASO,
     // PODEMOS TER UM ARRAY DE DEPENDENCIAS QUE IRA TRIGAR ESSE EFEITO.
@@ -18,7 +21,7 @@ const SearchParams = () => {
     requestPets();
 
     //TODA VEZ QUE O ANIMAL MUDAR, ELE IRA TRIGAR ESSE EFEITO
-  }, [animal]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   //SEMPRE PELO VISTO VAI TER QUE USAR ESSE ESLINT, SE O ARRAY DE DEPENCIAS ESTIVER VAZIO
 
   async function requestPets() {
@@ -29,7 +32,7 @@ const SearchParams = () => {
 
     setPets(json.pets);
   }
-  const breeds = [];
+
   return (
     <div className="search-params">
       <form onSubmit={(e)=>
